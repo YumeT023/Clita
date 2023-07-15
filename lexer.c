@@ -5,6 +5,19 @@
 #include <stdlib.h>
 #include <string.h>
 
+Token keyword_tokens[] = {
+        {.kind = Forony, .text = "Forony"},
+        {.kind = Ataovy, .text = "Ataovy"},
+        {.kind = Baiko, .text = "Baiko"},
+        {.kind = Raha, .text = "Raha"},
+        {.kind = Raiso, .text = "Raiso"},
+        {.kind = Kasoloy, .text = "Kasoloy"},
+        {.kind = Rambola, .text = "Rambola"},
+        {.kind = Ho, .text = "Ho"},
+};
+
+#define KEYWORD_LEN sizeof(keyword_tokens) / sizeof(*keyword_tokens)
+
 Token punctuation_tokens[] = {
         {.kind = Colon, .text = ":"},
         {.kind = Dot, .text = "."},
@@ -71,7 +84,7 @@ Token *lex(Lexer *l) {
         return scan_symbol(l);
     }
 
-    Token *t = token(EOF);
+    Token *t = token(Eof);
     set_range_pos_end(t, l->pos, l->pos);
     return t;
 }
@@ -84,6 +97,15 @@ Token *scan_symbol(Lexer *l) {
     }
     set_range_pos_end(t, begin, l->pos);
     t->text = cut(l->source, begin, t->end - begin);
+
+    for (int i = 0; i < KEYWORD_LEN; ++i) {
+        char *_strValue = keyword_tokens[i].text;
+        if (strcmpi(t->text, _strValue) == 0) {
+            t->kind = keyword_tokens[i].kind;
+            break;
+        }
+    }
+
     return t;
 }
 
@@ -172,8 +194,6 @@ static char *kind_str(TokenKind kind) {
             return "Numeric";
         case Symbol:
             return "Symbol";
-        case Keyword:
-            return "Keyword";
         // punctuation
         case Colon:
             return "Colon";
@@ -210,6 +230,23 @@ static char *kind_str(TokenKind kind) {
             return "Division";
         case Times:
             return "Times";
+        // reserved words
+        case Forony:
+            return "Forony";
+        case Ataovy:
+            return "Ataovy";
+        case Baiko:
+            return "Baiko";
+        case Raha:
+            return "Raha";
+        case Raiso:
+            return "Raiso";
+        case Kasoloy:
+            return "Kasoloy";
+        case Rambola:
+            return "Rambola";
+        case Ho:
+            return "Ho";
         default:
             printf("Unexpected kind: %d", kind);
             exit(1);

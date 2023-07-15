@@ -8,7 +8,6 @@ typedef enum {
     Eof = 0,
     Numeric,
     Symbol,
-    Keyword,
 
     // punctuation
     Colon,
@@ -31,6 +30,16 @@ typedef enum {
     Minus,
     Division,
     Times,
+
+    // keywords
+    Forony,
+    Ataovy,
+    Baiko,
+    Raha,
+    Raiso,
+    Kasoloy,
+    Rambola,
+    Ho,
 } TokenKind;
 
 typedef struct {
