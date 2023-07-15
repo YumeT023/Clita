@@ -54,6 +54,14 @@ Token *token(Token_Kind kind);
 // scan token
 Token *lex(Lexer *l);
 
+Token *scan_symbol(Lexer *l);
+Token *scan_numeric(Lexer *l);
+Token *scan_punctuation(Lexer *l);
+
+void set_range_pos(Token *t, size_t pos);
+void set_range_end(Token *t, size_t end);
+void set_range_pos_end(Token *t, size_t pos, size_t end);
+
 // predicates
 bool is_symbol_start(char c);
 bool is_symbol_part(char c);
@@ -62,9 +70,6 @@ bool is_symbol_part(char c);
 char peek(Lexer *l);
 
 bool is_eof(Lexer *l);
-
-// get the current char and move the cursor
-char consume(Lexer *l);
 
 // skip whitespace
 void trim_left(Lexer *l);

@@ -41,66 +41,94 @@ Token *token(Token_Kind kind) {
     return t;
 }
 
+
+void set_range_pos(Token *t, size_t pos) {
+    t->pos = pos;
+}
+
+void set_range_end(Token *t, size_t end) {
+    t->end = end;
+}
+
+void set_range_pos_end(Token *t, size_t pos, size_t end) {
+    t->pos = pos;
+    t->end = end;
+}
+
 Token *lex(Lexer *l) {
     trim_left(l);
-
-    Token *t = token(TOKEN_EOF);
     char c = peek(l);
 
     if (ispunct(c)) {
-        size_t begin = l->pos;
-        for (int i = 0; i < PUNCTUATION_TOKEN_LEN; ++i) {
-            char *text = punctuation_tokens[i].text;
-            if (*text == c) {
-                advance(l);
-                t->kind = punctuation_tokens[i].kind;
-                t->text = text;
-                t->end = l->pos;
-
-                char c_next = peek(l);
-
-                if ((t->kind == TOKEN_GT || t->kind == TOKEN_LT) && c_next == '=') {
-                    advance(l);
-                    char *sym = malloc(3 * sizeof(char));
-                    strcpy(sym, t->text);
-                    strncat(sym, &c_next, 1);
-
-                    t->kind = t->kind == TOKEN_GT ? TOKEN_GTE : TOKEN_LTE;
-                    t->text = sym;
-                    t->end = l->pos;
-                }
-
-                t->pos = begin;
-                return t;
-            }
-        }
-        printf("Unknown character: %c \n", c);
-        exit(1);
+        return scan_punctuation(l);
     }
 
     if (isdigit(c)) {
-        size_t begin = l->pos;
-        while (!is_eof(l) && isdigit(peek(l))) {
-            advance(l);
-        }
-        t->kind = TOKEN_NUMERIC;
-        t->text = cut(l->source, begin, l->pos - begin);
-        t->end = l->pos;
-        return t;
+        return scan_numeric(l);
     }
 
     if (is_symbol_start(c)) {
-        size_t begin = l->pos;
-        while (!is_eof(l) && is_symbol_part(peek(l))) {
-            advance(l);
-        }
-        t->kind = TOKEN_SYMBOl;
-        t->text = cut(l->source, begin, l->pos - begin);
-        t->end = l->pos;
-        return t;
+        return scan_symbol(l);
     }
 
+    Token *t = token(TOKEN_EOF);
+    set_range_pos_end(t, l->pos, l->pos);
     return t;
+}
+
+Token *scan_symbol(Lexer *l) {
+    Token *t = token(TOKEN_SYMBOl);
+    size_t begin = l->pos;
+    while (!is_eof(l) && is_symbol_part(peek(l))) {
+        advance(l);
+    }
+    set_range_pos_end(t, begin, l->pos);
+    t->text = cut(l->source, begin, t->end - begin);
+    return t;
+}
+
+Token *scan_numeric(Lexer *l) {
+    Token *t = token(TOKEN_NUMERIC);
+    size_t begin = l->pos;
+    while (!is_eof(l) && isdigit(peek(l))) {
+        advance(l);
+    }
+    set_range_pos_end(t, begin, l->pos);
+    t->text = cut(l->source, begin, t->pos - begin);
+    return t;
+}
+
+Token *scan_punctuation(Lexer *l) {
+    char c = peek(l);
+
+    for (int i = 0; i < PUNCTUATION_TOKEN_LEN; ++i) {
+        char *text = punctuation_tokens[i].text;
+        if (*text == c) {
+            Token *t = token(punctuation_tokens[i].kind);
+            set_range_pos_end(t, l->pos, l->pos + 1);
+
+            advance(l);
+            char c_next = peek(l);
+
+            if ((t->kind == TOKEN_GT || t->kind == TOKEN_LT) && c_next == '=') {
+                advance(l);
+                char *sym = malloc(3);
+                strcpy(sym, text);
+                strncat(sym, &c_next, 1);
+
+                set_range_end(t, l->pos);
+                t->kind = t->kind == TOKEN_GT ? TOKEN_GTE : TOKEN_LTE;
+                t->text = sym;
+                return t;
+            }
+            // fallback
+            t->text = text;
+            t->kind = t->kind;
+            return t;
+        }
+    }
+    printf("Unknown character: %c \n", c);
+    exit(1);
 }
 
 bool is_symbol_start(char c) {
@@ -120,12 +148,6 @@ char peek(Lexer *l) {
         return l->source[l->pos];
     }
     return 0;
-}
-
-char consume(Lexer *l) {
-    char c = peek(l);
-    advance(l);
-    return c;
 }
 
 void advance(Lexer *l) {
