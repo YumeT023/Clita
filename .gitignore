@@ -1,0 +1,7 @@
+# build output
+cmake-build-debug
+*.exe
+
+# IDE conf
+.idea
+.vscode
