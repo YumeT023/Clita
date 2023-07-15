@@ -8,7 +8,26 @@ typedef enum {
     TOKEN_EOF = 0,
     TOKEN_NUMERIC,
     TOKEN_SYMBOl,
-    TOKEN_KEYWORD
+    TOKEN_KEYWORD,
+
+    // punctuation
+    TOKEN_COLON,
+    TOKEN_DOT,
+    TOKEN_BRACKET_LEFT,
+    TOKEN_BRACKET_RIGHT,
+    TOKEN_BACKTICK,
+    TOKEN_UNDERSCORE,
+
+    // logical & op
+    TOKEN_GT,
+    TOKEN_LT,
+    TOKEN_PLUS,
+    TOKEN_MINUS,
+    TOKEN_DIVISION,
+    TOKEN_TIMES,
+    TOKEN_QUOTE,
+    TOKEN_DBL_QUOTE,
+    TOKEN_EQUALS
 } Token_Kind;
 
 typedef struct {
