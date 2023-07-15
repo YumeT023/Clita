@@ -186,7 +186,7 @@ void print_token(Token *t) {
     printf("%s = (%s) [%zu, %zu]\n", t->text, kind_str(t->kind), t->pos, t->end);
 }
 
-static char *kind_str(TokenKind kind) {
+char *kind_str(TokenKind kind) {
     switch (kind) {
         case Eof:
             return "End of file";

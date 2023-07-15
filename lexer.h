@@ -89,6 +89,6 @@ void advance(Lexer *l);
 void print_token(Token *t);
 
 // beauty token kind
-static char *kind_str(TokenKind kind);
+char *kind_str(TokenKind kind);
 
 #endif//CLITA_LEXER_H
