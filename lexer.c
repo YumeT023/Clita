@@ -75,9 +75,9 @@ Token *lex(Lexer *l) {
         return t;
     }
 
-    if (isalpha(c)) {
+    if (is_symbol_start(c)) {
         size_t begin = l->pos;
-        while (!is_eof(l) && isalnum(peek(l))) {
+        while (!is_eof(l) && is_symbol_part(peek(l))) {
             advance(l);
         }
         t->kind = TOKEN_SYMBOl;
@@ -87,6 +87,14 @@ Token *lex(Lexer *l) {
     }
 
     return t;
+}
+
+bool is_symbol_start(char c) {
+    return isalpha(c) || c == '_';
+}
+
+bool is_symbol_part(char c) {
+    return isalnum(c) || c == '_';
 }
 
 bool is_eof(Lexer *l) {

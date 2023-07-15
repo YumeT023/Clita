@@ -50,6 +50,10 @@ Token *token(Token_Kind kind);
 // scan token
 Token *lex(Lexer *l);
 
+// predicates
+bool is_symbol_start(char c);
+bool is_symbol_part(char c);
+
 // get the current char
 char peek(Lexer *l);
 
