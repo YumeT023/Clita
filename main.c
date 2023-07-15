@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 int main() {
-    char *input = "12 ISA AMPIDIRINA: 5.\n"
+    char *input = "ISA AMPIDIRINA: 5.\n"
                   "\n"
                   "BAIKO:\n"
                   "Forony lehibe_indrindra ho fidirana_faha[1].\n"
@@ -16,13 +16,13 @@ int main() {
                   "\n"
                   "ISA AVOAKA: lehibe_indrindra.";
 
-    Lexer *l = create_lexer(input);
+    Lexer l = create_lexer(input);
 
-    Token *t = lex(l);
-    while (t->kind != TOKEN_EOF) {
+    Token *t = lex(&l);
+    while (t->kind != Eof) {
         print_token(t);
-        t = lex(l);
+        t = lex(&l);
     }
-    free(l);
+    free(t);
     return 0;
 }

@@ -5,34 +5,33 @@
 #include <stddef.h>
 
 typedef enum {
-    TOKEN_EOF = 0,
-    TOKEN_NUMERIC,
-    TOKEN_SYMBOl,
-    TOKEN_KEYWORD,
+    Eof = 0,
+    Numeric,
+    Symbol,
+    Keyword,
 
     // punctuation
-    TOKEN_COLON,
-    TOKEN_DOT,
-    TOKEN_BRACKET_LEFT,
-    TOKEN_BRACKET_RIGHT,
-    TOKEN_BACKTICK,
-    TOKEN_UNDERSCORE,
+    Colon,
+    Dot,
+    BracketLeft,
+    BracketRight,
+    Backtick,
+    Underscore,
+    Quote,
+    DoubleQuote,
 
     // logical & op
-    TOKEN_GT,
-    TOKEN_LT,
+    Gt,
+    Lt,
+    Gte,
+    Lte,
+    Equals,
 
-    TOKEN_GTE,
-    TOKEN_LTE,
-
-    TOKEN_PLUS,
-    TOKEN_MINUS,
-    TOKEN_DIVISION,
-    TOKEN_TIMES,
-    TOKEN_QUOTE,
-    TOKEN_DBL_QUOTE,
-    TOKEN_EQUALS
-} Token_Kind;
+    Plus,
+    Minus,
+    Division,
+    Times,
+} TokenKind;
 
 typedef struct {
     const char *source;
@@ -43,13 +42,13 @@ typedef struct {
 
 typedef struct {
     char *text;
-    Token_Kind kind;
+    TokenKind kind;
     size_t pos;
     size_t end;
 } Token;
 
-Lexer *create_lexer(const char *source);
-Token *token(Token_Kind kind);
+Lexer create_lexer(const char *source);
+Token *token(TokenKind kind);
 
 // scan token
 Token *lex(Lexer *l);
@@ -81,6 +80,6 @@ void advance(Lexer *l);
 void print_token(Token *t);
 
 // beauty token kind
-static char *kind_str(Token_Kind kind);
+static char *kind_str(TokenKind kind);
 
 #endif//CLITA_LEXER_H

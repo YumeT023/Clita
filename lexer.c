@@ -6,35 +6,35 @@
 #include <string.h>
 
 Token punctuation_tokens[] = {
-        {.kind = TOKEN_COLON, .text = ":"},
-        {.kind = TOKEN_DOT, .text = "."},
-        {.kind = TOKEN_BRACKET_LEFT, .text = "["},
-        {.kind = TOKEN_BRACKET_RIGHT, .text = "]"},
-        {.kind = TOKEN_BACKTICK, .text = "`"},
-        {.kind = TOKEN_UNDERSCORE, .text = "_"},
-        {.kind = TOKEN_GT, .text = ">"},
-        {.kind = TOKEN_LT, .text = "<"},
-        {.kind = TOKEN_PLUS, .text = "+"},
-        {.kind = TOKEN_MINUS, .text = "-"},
-        {.kind = TOKEN_TIMES, .text = "*"},
-        {.kind = TOKEN_DIVISION, .text = "/"},
-        {.kind = TOKEN_QUOTE, .text = "'"},
-        {.kind = TOKEN_DBL_QUOTE, .text = "\""},
-        {.kind = TOKEN_EQUALS, .text = "="},
+        {.kind = Colon, .text = ":"},
+        {.kind = Dot, .text = "."},
+        {.kind = BracketLeft, .text = "["},
+        {.kind = BracketRight, .text = "]"},
+        {.kind = Backtick, .text = "`"},
+        {.kind = Underscore, .text = "_"},
+        {.kind = Gt, .text = ">"},
+        {.kind = Lt, .text = "<"},
+        {.kind = Plus, .text = "+"},
+        {.kind = Minus, .text = "-"},
+        {.kind = Times, .text = "*"},
+        {.kind = Division, .text = "/"},
+        {.kind = Quote, .text = "'"},
+        {.kind = DoubleQuote, .text = "\""},
+        {.kind = Equals, .text = "="},
 };
 
-#define PUNCTUATION_TOKEN_LEN sizeof(punctuation_tokens) / sizeof(*punctuation_tokens)
+#define PUNCTUATION_LEN sizeof(punctuation_tokens) / sizeof(*punctuation_tokens)
 
-Lexer *create_lexer(const char *source) {
-    Lexer *l = malloc(sizeof(Lexer));
-    l->source = source;
-    l->pos = 0;
-    l->line = 0;
-    l->end = strlen(source);
+Lexer create_lexer(const char *source) {
+    Lexer l = {
+            .source = source,
+            .pos = 0,
+            .line = 0,
+            .end = strlen(source)};
     return l;
 }
 
-Token *token(Token_Kind kind) {
+Token *token(TokenKind kind) {
     Token *t = malloc(sizeof(Token));
     t->text = NULL;
     t->kind = kind;
@@ -71,13 +71,13 @@ Token *lex(Lexer *l) {
         return scan_symbol(l);
     }
 
-    Token *t = token(TOKEN_EOF);
+    Token *t = token(EOF);
     set_range_pos_end(t, l->pos, l->pos);
     return t;
 }
 
 Token *scan_symbol(Lexer *l) {
-    Token *t = token(TOKEN_SYMBOl);
+    Token *t = token(Symbol);
     size_t begin = l->pos;
     while (!is_eof(l) && is_symbol_part(peek(l))) {
         advance(l);
@@ -88,7 +88,7 @@ Token *scan_symbol(Lexer *l) {
 }
 
 Token *scan_numeric(Lexer *l) {
-    Token *t = token(TOKEN_NUMERIC);
+    Token *t = token(Numeric);
     size_t begin = l->pos;
     while (!is_eof(l) && isdigit(peek(l))) {
         advance(l);
@@ -101,7 +101,7 @@ Token *scan_numeric(Lexer *l) {
 Token *scan_punctuation(Lexer *l) {
     char c = peek(l);
 
-    for (int i = 0; i < PUNCTUATION_TOKEN_LEN; ++i) {
+    for (int i = 0; i < PUNCTUATION_LEN; ++i) {
         char *text = punctuation_tokens[i].text;
         if (*text == c) {
             Token *t = token(punctuation_tokens[i].kind);
@@ -110,14 +110,14 @@ Token *scan_punctuation(Lexer *l) {
             advance(l);
             char c_next = peek(l);
 
-            if ((t->kind == TOKEN_GT || t->kind == TOKEN_LT) && c_next == '=') {
+            if ((t->kind == Gt || t->kind == Lt) && c_next == '=') {
                 advance(l);
                 char *sym = malloc(3);
                 strcpy(sym, text);
                 strncat(sym, &c_next, 1);
 
                 set_range_end(t, l->pos);
-                t->kind = t->kind == TOKEN_GT ? TOKEN_GTE : TOKEN_LTE;
+                t->kind = t->kind == Gt ? Gte : Lte;
                 t->text = sym;
                 return t;
             }
@@ -161,55 +161,55 @@ void trim_left(Lexer *l) {
 }
 
 void print_token(Token *t) {
-    printf("%s = (%s)\n", t->text, kind_str(t->kind));
+    printf("%s = (%s) [%zu, %zu]\n", t->text, kind_str(t->kind), t->pos, t->end);
 }
 
-// beauty token kind
-static char *kind_str(Token_Kind kind) {
+static char *kind_str(TokenKind kind) {
     switch (kind) {
-        case TOKEN_EOF:
+        case Eof:
             return "End of file";
-        case TOKEN_NUMERIC:
+        case Numeric:
             return "Numeric";
-        case TOKEN_SYMBOl:
+        case Symbol:
             return "Symbol";
-        case TOKEN_KEYWORD:
+        case Keyword:
             return "Keyword";
-        // punctuations
-        case TOKEN_GT:
-            return "Greater than";
-        case TOKEN_LT:
-            return "Lesser than";
-        case TOKEN_GTE:
-            return "Greater than or Equal";
-        case TOKEN_LTE:
-            return "Lesser than or Equal";
-        case TOKEN_COLON:
+        // punctuation
+        case Colon:
             return "Colon";
-        case TOKEN_UNDERSCORE:
-            return "Underscore";
-        case TOKEN_DOT:
+        case Dot:
             return "Dot";
-        case TOKEN_BRACKET_LEFT:
+        case BracketLeft:
             return "Bracket left";
-        case TOKEN_BRACKET_RIGHT:
+        case BracketRight:
             return "Bracket right";
-        case TOKEN_BACKTICK:
+        case Backtick:
             return "Backtick";
-        case TOKEN_PLUS:
-            return "Plus";
-        case TOKEN_MINUS:
-            return "Minus";
-        case TOKEN_DIVISION:
-            return "Division";
-        case TOKEN_TIMES:
-            return "Times";
-        case TOKEN_QUOTE:
+        case Underscore:
+            return "Underscore";
+        case Quote:
             return "Quote";
-        case TOKEN_DBL_QUOTE:
+        case DoubleQuote:
             return "Double quote";
-        case TOKEN_EQUALS:
+        // logical & op
+        case Gt:
+            return "Greater than";
+        case Lt:
+            return "Lesser than";
+        case Gte:
+            return "Greater than or Equal";
+        case Lte:
+            return "Lesser than or Equal";
+        case Equals:
             return "Equals";
+        case Plus:
+            return "Plus";
+        case Minus:
+            return "Minus";
+        case Division:
+            return "Division";
+        case Times:
+            return "Times";
         default:
             printf("Unexpected kind: %d", kind);
             exit(1);
