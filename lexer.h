@@ -21,6 +21,10 @@ typedef enum {
     // logical & op
     TOKEN_GT,
     TOKEN_LT,
+
+    TOKEN_GTE,
+    TOKEN_LTE,
+
     TOKEN_PLUS,
     TOKEN_MINUS,
     TOKEN_DIVISION,

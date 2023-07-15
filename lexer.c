@@ -55,8 +55,22 @@ Token *lex(Lexer *l) {
                 advance(l);
                 t->kind = punctuation_tokens[i].kind;
                 t->text = text;
-                t->pos = begin;
                 t->end = l->pos;
+
+                char c_next = peek(l);
+
+                if ((t->kind == TOKEN_GT || t->kind == TOKEN_LT) && c_next == '=') {
+                    advance(l);
+                    char *sym = malloc(3 * sizeof(char));
+                    strcpy(sym, t->text);
+                    strncat(sym, &c_next, 1);
+
+                    t->kind = t->kind == TOKEN_GT ? TOKEN_GTE : TOKEN_LTE;
+                    t->text = sym;
+                    t->end = l->pos;
+                }
+
+                t->pos = begin;
                 return t;
             }
         }
@@ -144,6 +158,10 @@ static char *kind_str(Token_Kind kind) {
             return "Greater than";
         case TOKEN_LT:
             return "Lesser than";
+        case TOKEN_GTE:
+            return "Greater than or Equal";
+        case TOKEN_LTE:
+            return "Lesser than or Equal";
         case TOKEN_COLON:
             return "Colon";
         case TOKEN_UNDERSCORE:
