@@ -116,7 +116,7 @@ Token *scan_numeric(Lexer *l) {
         advance(l);
     }
     set_range_pos_end(t, begin, l->pos);
-    t->text = cut(l->source, begin, t->pos - begin);
+    t->text = cut(l->source, t->pos, t->end - t->pos);
     return t;
 }
 
