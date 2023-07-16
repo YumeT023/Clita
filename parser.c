@@ -82,12 +82,29 @@ BinaryExprNode *parse_binary_expr(Parser *p) {
 
     Token *op = consume(p);
     TokenKind kind = op->kind;
-    assert(kind == Plus || kind == Minus || kind == Times || kind == Division || kind == Gt || kind == Gte || kind == Lt || kind == Lte);// -, +, *, /, >, >=, <, <=
+    assert(kind == Plus || kind == Minus || kind == Times || kind == Division);// -, +, *, /
 
     NumericLiteralNode *right = parse_numeric_literal(p);
 
     BinaryExprNode *node = malloc(sizeof(BinaryExprNode));
     node->type = BinaryExpr;
+    node->left = left;
+    node->right = right;
+    node->op = op->text;
+    return node;
+}
+
+ComparisonExprNode *parse_comparison_expr(Parser *p) {
+    NumericLiteralNode *left = parse_numeric_literal(p);
+
+    Token *op = consume(p);
+    TokenKind kind = op->kind;
+    assert(kind == Equals || kind == Gt || kind == Gte || kind == Lt || kind == Lte);// >, >=, <, <=, =
+
+    NumericLiteralNode *right = parse_numeric_literal(p);
+
+    ComparisonExprNode *node = malloc(sizeof(ComparisonExprNode));
+    node->type = ComparisonExpr;
     node->left = left;
     node->right = right;
     node->op = op->text;
