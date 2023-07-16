@@ -4,6 +4,7 @@
 #include "lexer.h"
 
 typedef enum {
+    Program,
     SymbolDeclaration,
     SymbolAssignment,
     SymbolLiteral,
@@ -57,6 +58,10 @@ typedef struct {
 } SymbolAssignmentNode;
 
 typedef struct {
+    NodeType type;
+} ProgramNode;
+
+typedef struct {
     Token *tokens;
     size_t tokens_len;
     size_t pos;
@@ -74,5 +79,6 @@ NumericLiteralNode *parse_numeric_literal(Parser *p);
 BinaryExprNode *parse_binary_expr(Parser *p);
 ComparisonExprNode *parse_comparison_expr(Parser *p);
 UnaryExprNode *parse_unary_expr(Parser *p);
+ProgramNode parse(char *source_text);
 
 #endif//CLITA_PARSER_H

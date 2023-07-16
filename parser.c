@@ -1,6 +1,7 @@
 #include "parser.h"
 #include "lexer.h"
 #include <assert.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 Parser create_parser(size_t initial_capacity) {
@@ -19,6 +20,19 @@ Token *consume(Parser *p) {
     Token *t = p_peek(p);
     p->pos++;
     return t;
+}
+
+ProgramNode parse(char *source_text) {
+    Lexer l = create_lexer(source_text);
+    Token *tokens = lex(&l);
+
+    size_t i = 0;
+    while (tokens[i].kind != Eof) {
+        print_token(&tokens[i]);
+        i++;
+    }
+    ProgramNode node = {.type = Program};
+    return node;
 }
 
 SymbolDeclarationNode *parse_symbol_declaration(Parser *p) {

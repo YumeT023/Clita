@@ -1,5 +1,6 @@
 #include "lexer.h"
 #include "util.h"
+#include <assert.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -69,6 +70,38 @@ void set_range_pos_end(Token *t, size_t pos, size_t end) {
 }
 
 Token *lex(Lexer *l) {
+    size_t capacity = 10;
+
+    Token *tokens = malloc(capacity * sizeof(Token));
+    assert(tokens != NULL);
+
+    Token *t = NULL;
+    size_t count = 0;
+
+    while ((t = lex_next(l))->kind != Eof) {
+        tokens[count++] = *t;
+
+        if (count == capacity) {
+            capacity *= 2;
+            Token *new_tokens = realloc(tokens, capacity * sizeof(Token));
+            if (new_tokens == NULL) {
+                free(tokens);
+                return NULL;
+            }
+            tokens = new_tokens;
+        }
+    }
+    Token *new_tokens = realloc(tokens, count * sizeof(Token));
+    if (new_tokens == NULL) {
+        free(tokens);
+        return NULL;
+    }
+    new_tokens[count] = *token(Eof);
+    tokens = new_tokens;
+    return tokens;
+}
+
+Token *lex_next(Lexer *l) {
     trim_left(l);
     char c = peek(l);
 

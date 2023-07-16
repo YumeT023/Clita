@@ -62,8 +62,8 @@ typedef struct {
 Lexer create_lexer(const char *source);
 Token *token(TokenKind kind);
 
-// scan token
 Token *lex(Lexer *l);
+Token *lex_next(Lexer *l);
 
 Token *scan_symbol(Lexer *l);
 Token *scan_numeric(Lexer *l);
