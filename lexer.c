@@ -192,7 +192,7 @@ Token *scan_punctuation(Lexer *l) {
             return t;
         }
     }
-    printf("Unknown character: %c \n", c);
+    report_error("Unknown character '%c'", c);
     exit(1);
 }
 
@@ -296,7 +296,6 @@ char *kind_str(TokenKind kind) {
         case Ho:
             return "Ho";
         default:
-            printf("Unexpected kind: %d", kind);
-            exit(1);
+            report_error("Unexpected kind: %d", kind);
     }
 }

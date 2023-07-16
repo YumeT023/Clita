@@ -1,13 +1,16 @@
 #include "parser.h"
 #include "lexer.h"
-#include <assert.h>
+#include "util.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 Parser create_parser(size_t initial_capacity) {
     Parser p;
     p.tokens = malloc(initial_capacity * sizeof(Token));
-    assert(p.tokens != NULL);
+    if (p.tokens == NULL) {
+        report_error("Failed to allocate memory for tokens");
+    }
     p.tokens_len = 0;
     return p;
 }
@@ -31,19 +34,27 @@ ProgramNode parse(char *source_text) {
         print_token(&tokens[i]);
         i++;
     }
-    ProgramNode node = {.type = Program};
+    ProgramNode node;
+    node.type = Program;
     return node;
 }
 
 SymbolDeclarationNode *parse_symbol_declaration(Parser *p) {
-    assert(consume(p)->kind == Forony);
+    if (consume(p)->kind != Forony) {
+        report_error("Expected 'Forony' in symbol declaration");
+    }
     SymbolLiteralNode *symbol = parse_symbol_literal(p);
 
-    assert(consume(p)->kind == Ho);
+    if (consume(p)->kind != Ho) {
+        report_error("Expected 'Ho' in symbol declaration");
+    }
+
     NumericLiteralNode *numeric = parse_numeric_literal(p);
 
     SymbolDeclarationNode *node = malloc(sizeof(SymbolDeclarationNode));
-    assert(node != NULL);
+    if (node == NULL) {
+        report_error("Failed to allocate memory for symbol declaration");
+    }
 
     node->type = SymbolDeclaration;
     node->identifier = symbol;
@@ -52,16 +63,23 @@ SymbolDeclarationNode *parse_symbol_declaration(Parser *p) {
 }
 
 SymbolAssignmentNode *parse_symbol_assignment(Parser *p) {
-    assert(consume(p)->kind == Raiso);
+    if (consume(p)->kind != Raiso) {
+        report_error("Expected 'Raiso' in symbol assignment");
+    }
     SymbolLiteralNode *symbol = parse_symbol_literal(p);
 
-    assert(consume(p)->kind == Kasoloy);
+    if (consume(p)->kind != Kasoloy) {
+        report_error("Expected 'Kasoloy' in symbol assignment");
+    }
+
     NumericLiteralNode *numeric = parse_numeric_literal(p);
 
     SymbolAssignmentNode *node = malloc(sizeof(SymbolAssignmentNode));
-    assert(node != NULL);
+    if (node == NULL) {
+        report_error("Failed to allocate memory for symbol assignment");
+    }
 
-    node->type = SymbolDeclaration;
+    node->type = SymbolAssignment;
     node->identifier = symbol;
     node->value = numeric;
     return node;
@@ -70,21 +88,31 @@ SymbolAssignmentNode *parse_symbol_assignment(Parser *p) {
 SymbolLiteralNode *parse_symbol_literal(Parser *p) {
     Token *t = consume(p);
 
-    assert(t->kind == Symbol);
+    if (t->kind != Symbol) {
+        report_error("Expected symbol literal");
+    }
+
     SymbolLiteralNode *node = malloc(sizeof(SymbolLiteralNode));
-    assert(node != NULL);
+    if (node == NULL) {
+        report_error("Failed to allocate memory for symbol literal");
+    }
 
     node->type = SymbolLiteral;
-    node->name = t->text;
+    node->name = strdup(t->text);
     return node;
 }
 
 NumericLiteralNode *parse_numeric_literal(Parser *p) {
     Token *t = consume(p);
 
-    assert(t->kind == Numeric);
+    if (t->kind != Numeric) {
+        report_error("Expected numeric literal");
+    }
+
     NumericLiteralNode *node = malloc(sizeof(NumericLiteralNode));
-    assert(node != NULL);
+    if (node == NULL) {
+        report_error("Failed to allocate memory for numeric literal");
+    }
 
     node->type = NumericLiteral;
     node->value = strtol(t->text, NULL, 10);
@@ -96,16 +124,21 @@ BinaryExprNode *parse_binary_expr(Parser *p) {
 
     Token *op = consume(p);
     TokenKind kind = op->kind;
-    assert(kind == Plus || kind == Minus || kind == Times || kind == Division);// -, +, *, /
+    if (kind != Plus && kind != Minus && kind != Times && kind != Division) {
+        report_error("Expected binary operator (+, -, *, /)");
+    }
 
     NumericLiteralNode *right = parse_numeric_literal(p);
 
     BinaryExprNode *node = malloc(sizeof(BinaryExprNode));
-    assert(node != NULL);
+    if (node == NULL) {
+        report_error("Failed to allocate memory for binary expression");
+    }
+
     node->type = BinaryExpr;
     node->left = left;
     node->right = right;
-    node->op = op->text;
+    node->op = strdup(op->text);
     return node;
 }
 
@@ -114,25 +147,34 @@ ComparisonExprNode *parse_comparison_expr(Parser *p) {
 
     Token *op = consume(p);
     TokenKind kind = op->kind;
-    assert(kind == Equals || kind == Gt || kind == Gte || kind == Lt || kind == Lte);// >, >=, <, <=, =
+    if (kind != Equals && kind != Gt && kind != Gte && kind != Lt && kind != Lte) {
+        report_error("Expected comparison operator (=, >, >=, <, <=)");
+    }
 
     NumericLiteralNode *right = parse_numeric_literal(p);
 
     ComparisonExprNode *node = malloc(sizeof(ComparisonExprNode));
-    assert(node != NULL);
+    if (node == NULL) {
+        report_error("Failed to allocate memory for comparison expression");
+    }
+
     node->type = ComparisonExpr;
     node->left = left;
     node->right = right;
-    node->op = op->text;
+    node->op = strdup(op->text);
     return node;
 }
 
 UnaryExprNode *parse_unary_expr(Parser *p) {
-    assert(consume(p)->kind == Minus);
+    if (consume(p)->kind != Minus) {
+        report_error("Expected unary operator (-)");
+    }
     NumericLiteralNode *numeric = parse_numeric_literal(p);
 
     UnaryExprNode *node = malloc(sizeof(UnaryExprNode));
-    assert(node != NULL);
+    if (node == NULL) {
+        report_error("Failed to allocate memory for unary expression");
+    }
     node->type = UnaryExpr;
     node->expr = numeric;
     node->op = '-';

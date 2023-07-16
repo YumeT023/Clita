@@ -19,7 +19,6 @@ typedef struct {
     char *name;
 } SymbolLiteralNode;
 
-
 typedef struct {
     NodeType type;
     int value;
