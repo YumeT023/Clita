@@ -60,3 +60,19 @@ NumericLiteralNode *parse_numeric_literal(Parser *p) {
     node->value = strtol(t->text, NULL, 10);
     return node;
 }
+
+BinaryExprNode *parse_binary_expr(Parser *p) {
+    NumericLiteralNode *left = parse_numeric_literal(p);
+
+    Token *op = consume(p);
+    assert(op->kind == Plus || op->kind == Minus || op->kind == Times || op->kind == Division);
+
+    NumericLiteralNode *right = parse_numeric_literal(p);
+
+    BinaryExprNode *node = malloc(sizeof(BinaryExprNode));
+    node->type = BinaryExpr;
+    node->left = left;
+    node->right = right;
+    node->op = *op->text;
+    return node;
+}
