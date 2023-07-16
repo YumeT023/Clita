@@ -50,6 +50,7 @@ typedef struct {
     size_t pos;
     size_t line;
     size_t end;
+    size_t count;
 } Lexer;
 
 typedef struct {

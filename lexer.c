@@ -42,6 +42,7 @@ Token punctuation_tokens[] = {
 Lexer create_lexer(const char *source) {
     Lexer l = {
             .source = source,
+            .count = 0,
             .pos = 0,
             .line = 0,
             .end = strlen(source)};
@@ -76,12 +77,11 @@ Token *lex(Lexer *l) {
     assert(tokens != NULL);
 
     Token *t = NULL;
-    size_t count = 0;
 
     while ((t = lex_next(l))->kind != Eof) {
-        tokens[count++] = *t;
+        tokens[l->count++] = *t;
 
-        if (count == capacity) {
+        if (l->count == capacity) {
             capacity *= 2;
             Token *new_tokens = realloc(tokens, capacity * sizeof(Token));
             if (new_tokens == NULL) {
@@ -91,12 +91,12 @@ Token *lex(Lexer *l) {
             tokens = new_tokens;
         }
     }
-    Token *new_tokens = realloc(tokens, count * sizeof(Token));
+    Token *new_tokens = realloc(tokens, l->count * sizeof(Token));
     if (new_tokens == NULL) {
         free(tokens);
         return NULL;
     }
-    new_tokens[count] = *token(Eof);
+    new_tokens[l->count] = *token(Eof);
     tokens = new_tokens;
     return tokens;
 }
@@ -193,7 +193,6 @@ Token *scan_punctuation(Lexer *l) {
         }
     }
     report_error("Unknown character '%c'", c);
-    exit(1);
 }
 
 bool is_symbol_start(char c) {

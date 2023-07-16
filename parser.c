@@ -8,6 +8,7 @@
 Parser create_parser(size_t initial_capacity) {
     Parser p;
     p.tokens = malloc(initial_capacity * sizeof(Token));
+    p.pos = 0;
     if (p.tokens == NULL) {
         report_error("Failed to allocate memory for tokens");
     }
