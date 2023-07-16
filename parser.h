@@ -5,6 +5,7 @@
 
 typedef enum {
     SymbolDeclaration,
+    SymbolAssignment,
     SymbolLiteral,
     NumericLiteral,
     BinaryExpr
@@ -41,6 +42,12 @@ typedef struct {
 } SymbolDeclarationNode;
 
 typedef struct {
+    NodeType type;
+    SymbolLiteralNode *identifier;
+    NumericLiteralNode *value;
+} SymbolAssignmentNode;
+
+typedef struct {
     Token *tokens;
     size_t tokens_len;
     size_t pos;
@@ -52,6 +59,7 @@ Token *consume(Parser *p);
 Token *p_peek(Parser *p);
 
 SymbolDeclarationNode *parse_symbol_declaration(Parser *p);
+SymbolAssignmentNode *parse_symbol_assignment(Parser *p);
 SymbolLiteralNode *parse_symbol_literal(Parser *p);
 NumericLiteralNode *parse_numeric_literal(Parser *p);
 BinaryExprNode *parse_binary_expr(Parser *p);

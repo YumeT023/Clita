@@ -37,6 +37,22 @@ SymbolDeclarationNode *parse_symbol_declaration(Parser *p) {
     return node;
 }
 
+SymbolAssignmentNode *parse_symbol_assignment(Parser *p) {
+    assert(consume(p)->kind == Raiso);
+    SymbolLiteralNode *symbol = parse_symbol_literal(p);
+
+    assert(consume(p)->kind == Kasoloy);
+    NumericLiteralNode *numeric = parse_numeric_literal(p);
+
+    SymbolAssignmentNode *node = malloc(sizeof(SymbolAssignmentNode));
+    assert(node != NULL);
+
+    node->type = SymbolDeclaration;
+    node->identifier = symbol;
+    node->value = numeric;
+    return node;
+}
+
 SymbolLiteralNode *parse_symbol_literal(Parser *p) {
     Token *t = consume(p);
 
