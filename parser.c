@@ -87,6 +87,7 @@ BinaryExprNode *parse_binary_expr(Parser *p) {
     NumericLiteralNode *right = parse_numeric_literal(p);
 
     BinaryExprNode *node = malloc(sizeof(BinaryExprNode));
+    assert(node != NULL);
     node->type = BinaryExpr;
     node->left = left;
     node->right = right;
@@ -104,6 +105,7 @@ ComparisonExprNode *parse_comparison_expr(Parser *p) {
     NumericLiteralNode *right = parse_numeric_literal(p);
 
     ComparisonExprNode *node = malloc(sizeof(ComparisonExprNode));
+    assert(node != NULL);
     node->type = ComparisonExpr;
     node->left = left;
     node->right = right;
@@ -116,6 +118,7 @@ UnaryExprNode *parse_unary_expr(Parser *p) {
     NumericLiteralNode *numeric = parse_numeric_literal(p);
 
     UnaryExprNode *node = malloc(sizeof(UnaryExprNode));
+    assert(node != NULL);
     node->type = UnaryExpr;
     node->expr = numeric;
     node->op = '-';
