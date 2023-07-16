@@ -3,4 +3,4 @@ project(clita C)
 
 set(CMAKE_C_STANDARD 23)
 
-add_executable(clita main.c lexer.c lexer.h util.c util.h)
+add_executable(clita main.c lexer.c lexer.h util.c util.h parser.c parser.h)
