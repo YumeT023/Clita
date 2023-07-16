@@ -40,6 +40,23 @@ ProgramNode parse(char *source_text) {
     return node;
 }
 
+// TODO: parse fn for the original pragma syntax
+PragmaNode *parse_pragma(Parser *p) {
+    PragmaNode *node = malloc(sizeof(PragmaNode));
+
+    if (node == NULL) {
+        report_error("Failed to allocate memory for pragma definition");
+    }
+    node->name = parse_symbol_literal(p)->name;
+
+    if (consume(p)->kind != Colon) {
+        report_error("Expected a 'Colon' in pragma definition");
+    }
+
+    node->argument = parse_numeric_literal(p);
+    return node;
+}
+
 SymbolDeclarationNode *parse_symbol_declaration(Parser *p) {
     if (consume(p)->kind != Forony) {
         report_error("Expected 'Forony' in symbol declaration");

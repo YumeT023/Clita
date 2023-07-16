@@ -12,6 +12,7 @@ typedef enum {
     BinaryExpr,    // kajy
     ComparisonExpr,// vina
     UnaryExpr,
+    Pragma
 } NodeType;
 
 typedef struct {
@@ -58,6 +59,12 @@ typedef struct {
 
 typedef struct {
     NodeType type;
+    char *name;
+    NumericLiteralNode *argument;
+} PragmaNode;
+
+typedef struct {
+    NodeType type;
 } ProgramNode;
 
 typedef struct {
@@ -78,6 +85,7 @@ NumericLiteralNode *parse_numeric_literal(Parser *p);
 BinaryExprNode *parse_binary_expr(Parser *p);
 ComparisonExprNode *parse_comparison_expr(Parser *p);
 UnaryExprNode *parse_unary_expr(Parser *p);
+PragmaNode *parse_pragma(Parser *p);
 ProgramNode parse(char *source_text);
 
 #endif//CLITA_PARSER_H
