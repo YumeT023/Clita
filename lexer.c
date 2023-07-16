@@ -98,6 +98,16 @@ Token *scan_symbol(Lexer *l) {
     set_range_pos_end(t, begin, l->pos);
     t->text = cut(l->source, begin, t->end - begin);
 
+    if (strcmpi(t->text, "Marina") == 0) {
+        t->kind = Marina;
+        return t;
+    }
+
+    if (strcmpi(t->text, "Diso") == 0) {
+        t->kind = Diso;
+        return t;
+    }
+
     for (int i = 0; i < KEYWORD_LEN; ++i) {
         char *_strValue = keyword_tokens[i].text;
         if (strcmpi(t->text, _strValue) == 0) {
@@ -190,6 +200,11 @@ char *kind_str(TokenKind kind) {
     switch (kind) {
         case Eof:
             return "End of file";
+        case Marina:
+            return "Marina";
+        // vina literal
+        case Diso:
+            return "Diso";
         case Numeric:
             return "Numeric";
         case Symbol:

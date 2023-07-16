@@ -6,8 +6,11 @@
 
 typedef enum {
     Eof = 0,
+    // literal
     Numeric,
     Symbol,
+    Marina,
+    Diso,
 
     // punctuation
     Colon,
