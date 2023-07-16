@@ -8,7 +8,8 @@ typedef enum {
     SymbolAssignment,
     SymbolLiteral,
     NumericLiteral,
-    BinaryExpr
+    BinaryExpr,
+    UnaryExpr,
 } NodeType;
 
 typedef struct {
@@ -29,10 +30,17 @@ typedef struct {
     NumericLiteralNode *right;
 } BinaryExprNode;
 
+typedef struct {
+    NodeType type;
+    char op; // '-'
+    NumericLiteralNode *expr;
+} UnaryExprNode;
+
 typedef union {
     SymbolLiteralNode symbolLiteralNode;
     NumericLiteralNode numericLiteralNode;
     BinaryExprNode binaryExprNode;
+    UnaryExprNode unaryExprNode;
 } Expression;
 
 typedef struct {
@@ -63,5 +71,6 @@ SymbolAssignmentNode *parse_symbol_assignment(Parser *p);
 SymbolLiteralNode *parse_symbol_literal(Parser *p);
 NumericLiteralNode *parse_numeric_literal(Parser *p);
 BinaryExprNode *parse_binary_expr(Parser *p);
+UnaryExprNode *parse_unary_expr(Parser *p);
 
 #endif//CLITA_PARSER_H

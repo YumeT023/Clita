@@ -92,3 +92,14 @@ BinaryExprNode *parse_binary_expr(Parser *p) {
     node->op = *op->text;
     return node;
 }
+
+UnaryExprNode *parse_unary_expr(Parser *p) {
+    assert(consume(p)->kind == Minus);
+    NumericLiteralNode *numeric = parse_numeric_literal(p);
+
+    UnaryExprNode *node = malloc(sizeof(UnaryExprNode));
+    node->type = UnaryExpr;
+    node->expr = numeric;
+    node->op = '-';
+    return node;
+}
