@@ -26,7 +26,7 @@ typedef struct {
 typedef struct {
     NodeType type;
     NumericLiteralNode *left;
-    char op;// + , - , * , /
+    char *op;// + , - , * , /, <, >, <=, >=
     NumericLiteralNode *right;
 } BinaryExprNode;
 

@@ -81,7 +81,8 @@ BinaryExprNode *parse_binary_expr(Parser *p) {
     NumericLiteralNode *left = parse_numeric_literal(p);
 
     Token *op = consume(p);
-    assert(op->kind == Plus || op->kind == Minus || op->kind == Times || op->kind == Division);
+    TokenKind kind = op->kind;
+    assert(kind == Plus || kind == Minus || kind == Times || kind == Division || kind == Gt || kind == Gte || kind == Lt || kind == Lte);// -, +, *, /, >, >=, <, <=
 
     NumericLiteralNode *right = parse_numeric_literal(p);
 
@@ -89,7 +90,7 @@ BinaryExprNode *parse_binary_expr(Parser *p) {
     node->type = BinaryExpr;
     node->left = left;
     node->right = right;
-    node->op = *op->text;
+    node->op = op->text;
     return node;
 }
 
