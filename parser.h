@@ -25,6 +25,7 @@ typedef struct {
     int value;
 } NumericLiteralNode;
 
+// TODO: should support recursive binaryExpr such as: 2 + 5 - 4 + 5
 typedef struct {
     NodeType type;
     NumericLiteralNode *left;
@@ -39,6 +40,7 @@ typedef struct {
     NumericLiteralNode *right;
 } ComparisonExprNode;
 
+// TODO: should support symbol_literal_node
 typedef struct {
     NodeType type;
     char op;// '-'
@@ -87,6 +89,8 @@ Parser create_parser(Lexer *l);
 
 Token *consume(Parser *p);
 Token *p_peek(Parser *p);
+
+// TODO: Node printer
 
 SymbolDeclarationNode *parse_symbol_declaration(Parser *p);
 SymbolAssignmentNode *parse_symbol_assignment(Parser *p);
