@@ -1,4 +1,6 @@
+#include "lexer.h"
 #include "parser.h"
+#include <stdio.h>
 
 int main() {
     //    char *input = "Forony mpanisa ho 2";
@@ -19,6 +21,11 @@ int main() {
     //    SymbolDeclarationNode *node = parse_symbol_declaration(&p);
     //    printf("<SymbolDeclaration>:: %s = %d", node->identifier->name, node->initialValue->value);
 
-    ProgramNode node = parse("Raiso mpanisa kasoloy 105000");
+    char *input = "Forony AbstractProxyFactoryBean ho 0";
+    Lexer l = create_lexer(input);
+    Parser p = create_parser(&l);
+
+    SymbolDeclarationNode *node = parse_symbol_declaration(&p);
+    printf("<SymbolDeclarationNode>:: %s = %d", node->identifier->name, node->initialValue->value);
     return 0;
 }

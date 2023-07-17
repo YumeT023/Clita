@@ -5,14 +5,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-Parser create_parser(size_t initial_capacity) {
-    Parser p;
-    p.tokens = malloc(initial_capacity * sizeof(Token));
-    p.pos = 0;
-    if (p.tokens == NULL) {
-        report_error("Failed to allocate memory for tokens");
-    }
-    p.tokens_len = 0;
+Parser create_parser(Lexer *l) {
+    Token *t = lex(l);
+    Parser p = {
+            .tokens = t,
+            .tokens_len = l->scanned_tc,
+            .pos = 0};
     return p;
 }
 

@@ -73,7 +73,7 @@ typedef struct {
     size_t pos;
 } Parser;
 
-Parser create_parser(size_t initial_capacity);
+Parser create_parser(Lexer *l);
 
 Token *consume(Parser *p);
 Token *p_peek(Parser *p);

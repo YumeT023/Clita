@@ -42,7 +42,7 @@ Token punctuation_tokens[] = {
 Lexer create_lexer(const char *source) {
     Lexer l = {
             .source = source,
-            .count = 0,
+            .scanned_tc = 0,
             .pos = 0,
             .line = 0,
             .end = strlen(source)};
@@ -79,9 +79,9 @@ Token *lex(Lexer *l) {
     Token *t = NULL;
 
     while ((t = lex_next(l))->kind != Eof) {
-        tokens[l->count++] = *t;
+        tokens[l->scanned_tc++] = *t;
 
-        if (l->count == capacity) {
+        if (l->scanned_tc == capacity) {
             capacity *= 2;
             Token *new_tokens = realloc(tokens, capacity * sizeof(Token));
             if (new_tokens == NULL) {
@@ -91,12 +91,12 @@ Token *lex(Lexer *l) {
             tokens = new_tokens;
         }
     }
-    Token *new_tokens = realloc(tokens, l->count * sizeof(Token));
+    Token *new_tokens = realloc(tokens, l->scanned_tc * sizeof(Token));
     if (new_tokens == NULL) {
         free(tokens);
         return NULL;
     }
-    new_tokens[l->count] = *token(Eof);
+    new_tokens[l->scanned_tc] = *token(Eof);
     tokens = new_tokens;
     return tokens;
 }
