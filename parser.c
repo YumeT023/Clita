@@ -1,6 +1,7 @@
 #include "parser.h"
 #include "lexer.h"
 #include "util.h"
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -35,6 +36,48 @@ ProgramNode parse(char *source_text) {
     }
     ProgramNode node;
     node.type = Program;
+    return node;
+}
+
+Expression *parse_expression(Parser *p) {
+    Token *t = p_peek(p);
+    Expression *node = malloc(sizeof(Expression));
+
+    if (node == NULL) {
+        report_error("Failed to allocate memory for expression");
+    }
+
+    switch (t->kind) {
+        case Minus:
+            node->type = UnaryExpr;
+            node->unaryExpr = *parse_unary_expr(p);
+            break;
+        case Symbol:
+            node->type = SymbolLiteral;
+            node->symbolLiteral = *parse_symbol_literal(p);
+            break;
+        case Numeric: {
+            size_t save_pos = p->pos++;
+            Token *next = consume(p);
+            TokenKind kind = next->kind;
+
+            if (kind == Plus || kind == Minus || kind == Times || kind == Division) {
+                p->pos = save_pos;
+                node->type = BinaryExpr;
+                node->binaryExpr = *parse_binary_expr(p);
+                break;
+            }
+
+            p->pos = save_pos;
+            node->type = NumericLiteral;
+            node->numericLiteral = *parse_numeric_literal(p);
+            break;
+        }
+        default:
+            free(node);
+            report_error("Unexpected token %s in Expression", kind_str(t->kind));
+    }
+
     return node;
 }
 

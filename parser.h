@@ -65,6 +65,16 @@ typedef struct {
 
 typedef struct {
     NodeType type;
+    union {
+        SymbolLiteralNode symbolLiteral;
+        NumericLiteralNode numericLiteral;
+        BinaryExprNode binaryExpr;
+        UnaryExprNode unaryExpr;
+    };
+} Expression;
+
+typedef struct {
+    NodeType type;
 } ProgramNode;
 
 typedef struct {
@@ -86,6 +96,7 @@ BinaryExprNode *parse_binary_expr(Parser *p);
 ComparisonExprNode *parse_comparison_expr(Parser *p);
 UnaryExprNode *parse_unary_expr(Parser *p);
 PragmaNode *parse_pragma(Parser *p);
+Expression *parse_expression(Parser *p);
 ProgramNode parse(char *source_text);
 
 #endif//CLITA_PARSER_H
