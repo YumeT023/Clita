@@ -19,6 +19,14 @@ Token *p_peek(Parser *p) {
     return &p->tokens[p->pos];
 }
 
+Token *look_ahead(Parser *p, size_t n) {
+    size_t pos = n + p->pos;
+    if (pos > p->tokens_len && pos > 0) {
+        report_error("Unable to look ahead at n: %zu", n);
+    }
+    return &p->tokens[pos];
+}
+
 Token *consume(Parser *p) {
     Token *t = p_peek(p);
     p->pos++;
@@ -57,20 +65,15 @@ Expression *parse_expression(Parser *p) {
             node->symbolLiteral = *parse_symbol_literal(p);
             break;
         case Numeric: {
-            size_t save_pos = p->pos++;
-            Token *next = consume(p);
-            TokenKind kind = next->kind;
+            TokenKind k = look_ahead(p, 1)->kind;
 
-            if (kind == Plus || kind == Minus || kind == Times || kind == Division) {
-                p->pos = save_pos;
+            if (k == Plus || k == Minus || k == Times || k == Division) {
                 node->type = BinaryExpr;
                 node->binaryExpr = *parse_binary_expr(p);
-                break;
+            } else {
+                node->type = NumericLiteral;
+                node->numericLiteral = *parse_numeric_literal(p);
             }
-
-            p->pos = save_pos;
-            node->type = NumericLiteral;
-            node->numericLiteral = *parse_numeric_literal(p);
             break;
         }
         default:
@@ -187,7 +190,7 @@ BinaryExprNode *parse_binary_expr(Parser *p) {
         report_error("Expected binary operator (+, -, *, /)");
     }
 
-    NumericLiteralNode *right = parse_numeric_literal(p);
+    Expression *right = parse_expression(p);
 
     BinaryExprNode *node = malloc(sizeof(BinaryExprNode));
     if (node == NULL) {
@@ -236,6 +239,6 @@ UnaryExprNode *parse_unary_expr(Parser *p) {
     }
     node->type = UnaryExpr;
     node->expr = numeric;
-    node->op = '-';
+    node->op = "-";
     return node;
 }

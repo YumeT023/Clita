@@ -25,13 +25,15 @@ typedef struct {
     int value;
 } NumericLiteralNode;
 
-// TODO: should support recursive binaryExpr such as: 2 + 5 - 4 + 5
-typedef struct {
+typedef struct Expression Expression;
+typedef struct BinaryExprNode BinaryExprNode;
+// TODO: should also support symbolLiteral as its operand
+struct BinaryExprNode {
     NodeType type;
     NumericLiteralNode *left;
     char *op;// + , - , * , /
-    NumericLiteralNode *right;
-} BinaryExprNode;
+    Expression *right;
+};
 
 typedef struct {
     NodeType type;
@@ -40,10 +42,10 @@ typedef struct {
     NumericLiteralNode *right;
 } ComparisonExprNode;
 
-// TODO: should support symbol_literal_node
+// TODO: should support symbol_literal_node and add pre/post(increment)
 typedef struct {
     NodeType type;
-    char op;// '-'
+    char *op;// '-', '--', '++'
     NumericLiteralNode *expr;
 } UnaryExprNode;
 
@@ -65,7 +67,7 @@ typedef struct {
     NumericLiteralNode *argument;
 } PragmaNode;
 
-typedef struct {
+struct Expression {
     NodeType type;
     union {
         SymbolLiteralNode symbolLiteral;
@@ -73,7 +75,7 @@ typedef struct {
         BinaryExprNode binaryExpr;
         UnaryExprNode unaryExpr;
     };
-} Expression;
+};
 
 typedef struct {
     NodeType type;
@@ -89,6 +91,16 @@ Parser create_parser(Lexer *l);
 
 Token *consume(Parser *p);
 Token *p_peek(Parser *p);
+
+/**
+ * (Backtracking)
+ * look forward nth token.
+ * Primarily used to test different rules of a same production.
+ *
+ * When analyzing data such as "2 + 3", it is important to search for a possible token after the `numeric` when trying to determine its meaning.
+ * we should parse a `BinaryExpression` if it's an operator token, else a `NumericLiteral`
+ */
+Token *look_ahead(Parser *p, size_t n);
 
 // TODO: Node printer
 

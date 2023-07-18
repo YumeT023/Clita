@@ -1,7 +1,6 @@
 #include "lexer.h"
 #include "parser.h"
 #include <stdio.h>
-#include <stdlib.h>
 
 int main() {
     //    char *input = "Forony mpanisa ho 2";
@@ -22,21 +21,19 @@ int main() {
     //    SymbolDeclarationNode *node = parse_symbol_declaration(&p);
     //    printf("<SymbolDeclaration>:: %s = %d", node->identifier->name, node->initialValue->value);
 
-    char *input = "5 mpanisa -20 5 + 6705 100";
+    char *input = "2 * 50 + 8 * 200";
     Lexer l = create_lexer(input);
     Parser p = create_parser(&l);
 
-    Expression *nl5 = parse_expression(&p);
-    Expression *sl = parse_expression(&p);
-    Expression *u_expr = parse_expression(&p);
-    Expression *b_expr = parse_expression(&p);
-    Expression *nl100 = parse_expression(&p);
+    Expression *expr = parse_expression(&p);
 
-    printf("NumericLiteral: %d\n", nl5->numericLiteral.value);
-    printf("SymbolLiteral: %s\n", sl->symbolLiteral.name);
-    printf("UnaryExpression: %c%d\n", u_expr->unaryExpr.op, u_expr->unaryExpr.expr->value);
-    printf("BinaryExpression: %d %s %d\n", b_expr->binaryExpr.left->value, b_expr->binaryExpr.op, b_expr->binaryExpr.right->value);
-    printf("NumericLiteral: %d\n", nl100->numericLiteral.value);
+    BinaryExprNode *expr1 = &expr->binaryExpr;
+    BinaryExprNode *expr2 = &expr->binaryExpr.right->binaryExpr;
+    BinaryExprNode *expr3 = &expr->binaryExpr.right->binaryExpr.right->binaryExpr;
+
+    printf("> %d %s %d\n", expr1->left->value, expr1->op, expr2->left->value);
+    printf("> %d %s %d\n", expr2->left->value, expr2->op, expr3->left->value);
+    printf("> %d %s %d\n", expr3->left->value, expr3->op, expr3->right->numericLiteral.value);
 
     return 0;
 }
