@@ -15,18 +15,28 @@ typedef enum {
     Pragma
 } NodeType;
 
-typedef struct {
-    NodeType type;
-    char *name;
-} SymbolLiteralNode;
-
-typedef struct {
-    NodeType type;
-    int value;
-} NumericLiteralNode;
-
+typedef struct ProgramNode ProgramNode;
+typedef struct SymbolDeclarationNode SymbolDeclarationNode;
+typedef struct SymbolAssignmentNode SymbolAssignmentNode;
 typedef struct Expression Expression;
 typedef struct BinaryExprNode BinaryExprNode;
+typedef struct UnaryExprNode UnaryExprNode;
+typedef struct ComparisonExprNode ComparisonExprNode;
+typedef struct NumericLiteralNode NumericLiteralNode;
+typedef struct SymbolLiteralNode SymbolLiteralNode;
+
+typedef struct PragmaNode PragmaNode;
+
+struct SymbolLiteralNode {
+    NodeType type;
+    char *name;
+};
+
+struct NumericLiteralNode {
+    NodeType type;
+    int value;
+};
+
 // TODO: should also support symbolLiteral as its operand
 struct BinaryExprNode {
     NodeType type;
@@ -35,37 +45,37 @@ struct BinaryExprNode {
     Expression *right;
 };
 
-typedef struct {
+struct ComparisonExprNode {
     NodeType type;
     NumericLiteralNode *left;
     char *op;// <, <=, >, >=, =
     NumericLiteralNode *right;
-} ComparisonExprNode;
+};
 
 // TODO: should support symbol_literal_node and add pre/post(increment)
-typedef struct {
+struct UnaryExprNode {
     NodeType type;
     char *op;// '-', '--', '++'
     NumericLiteralNode *expr;
-} UnaryExprNode;
+};
 
-typedef struct {
+struct SymbolDeclarationNode {
     NodeType type;
     SymbolLiteralNode *identifier;
     NumericLiteralNode *initialValue;
-} SymbolDeclarationNode;
+};
 
-typedef struct {
+struct SymbolAssignmentNode {
     NodeType type;
     SymbolLiteralNode *identifier;
     NumericLiteralNode *value;
-} SymbolAssignmentNode;
+};
 
-typedef struct {
+struct PragmaNode {
     NodeType type;
     char *name;
     NumericLiteralNode *argument;
-} PragmaNode;
+};
 
 struct Expression {
     NodeType type;
@@ -77,9 +87,9 @@ struct Expression {
     };
 };
 
-typedef struct {
+struct ProgramNode {
     NodeType type;
-} ProgramNode;
+};
 
 typedef struct {
     Token *tokens;
