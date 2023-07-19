@@ -37,10 +37,9 @@ struct NumericLiteralNode {
     int value;
 };
 
-// TODO: should also support symbolLiteral as its operand
 struct BinaryExprNode {
     NodeType type;
-    NumericLiteralNode *left;
+    LiteralExpr *left;
     char *op;// + , - , * , /
     Expression *right;
 };
@@ -52,11 +51,10 @@ struct ComparisonExprNode {
     NumericLiteralNode *right;
 };
 
-// TODO: should support symbol_literal_node and add pre/post(increment)
 struct UnaryExprNode {
     NodeType type;
     char *op;// '-', '--', '++'
-    NumericLiteralNode *expr;
+    LiteralExpr *expr;
 };
 
 struct SymbolDeclarationNode {
@@ -88,10 +86,9 @@ struct LiteralExpr {
 struct Expression {
     NodeType type;
     union {
-        SymbolLiteralNode symbolLiteral;
-        NumericLiteralNode numericLiteral;
         BinaryExprNode binaryExpr;
         UnaryExprNode unaryExpr;
+        LiteralExpr literalExpr;
     };
 };
 

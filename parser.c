@@ -61,9 +61,6 @@ Expression *parse_expression(Parser *p) {
             node->unaryExpr = *parse_unary_expr(p);
             break;
         case Symbol:
-            node->type = SymbolLiteral;
-            node->symbolLiteral = *parse_symbol_literal(p);
-            break;
         case Numeric: {
             TokenKind k = look_ahead(p, 1)->kind;
 
@@ -72,7 +69,7 @@ Expression *parse_expression(Parser *p) {
                 node->binaryExpr = *parse_binary_expr(p);
             } else {
                 node->type = NumericLiteral;
-                node->numericLiteral = *parse_numeric_literal(p);
+                node->literalExpr = *parse_literal_expr(p);
             }
             break;
         }
@@ -202,7 +199,7 @@ LiteralExpr *parse_literal_expr(Parser *p) {
 }
 
 BinaryExprNode *parse_binary_expr(Parser *p) {
-    NumericLiteralNode *left = parse_numeric_literal(p);
+    LiteralExpr *left = parse_literal_expr(p);
 
     Token *op = consume(p);
     TokenKind kind = op->kind;
@@ -251,14 +248,14 @@ UnaryExprNode *parse_unary_expr(Parser *p) {
     if (consume(p)->kind != Minus) {
         report_error("Expected unary operator (-)");
     }
-    NumericLiteralNode *numeric = parse_numeric_literal(p);
+    LiteralExpr *literalExpr = parse_literal_expr(p);
 
     UnaryExprNode *node = malloc(sizeof(UnaryExprNode));
     if (node == NULL) {
         report_error("Failed to allocate memory for unary expression");
     }
     node->type = UnaryExpr;
-    node->expr = numeric;
+    node->expr = literalExpr;
     node->op = "-";
     return node;
 }
