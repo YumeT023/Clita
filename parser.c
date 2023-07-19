@@ -181,6 +181,26 @@ NumericLiteralNode *parse_numeric_literal(Parser *p) {
     return node;
 }
 
+LiteralExpr *parse_literal_expr(Parser *p) {
+    Token *t = p_peek(p);
+
+    LiteralExpr *node = malloc(sizeof(LiteralExpr));
+    switch (t->kind) {
+        case Numeric:
+            node->type = NumericLiteral;
+            node->numericLiteral = *parse_numeric_literal(p);
+            break;
+        case Symbol:
+            node->type = SymbolLiteral;
+            node->symbolLiteral = *parse_symbol_literal(p);
+            break;
+        default:
+            free(node);
+            report_error("Unexpected %s token", kind_str(t->kind));
+    }
+    return node;
+}
+
 BinaryExprNode *parse_binary_expr(Parser *p) {
     NumericLiteralNode *left = parse_numeric_literal(p);
 

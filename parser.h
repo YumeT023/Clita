@@ -19,12 +19,12 @@ typedef struct ProgramNode ProgramNode;
 typedef struct SymbolDeclarationNode SymbolDeclarationNode;
 typedef struct SymbolAssignmentNode SymbolAssignmentNode;
 typedef struct Expression Expression;
+typedef struct LiteralExpr LiteralExpr;
 typedef struct BinaryExprNode BinaryExprNode;
 typedef struct UnaryExprNode UnaryExprNode;
 typedef struct ComparisonExprNode ComparisonExprNode;
 typedef struct NumericLiteralNode NumericLiteralNode;
 typedef struct SymbolLiteralNode SymbolLiteralNode;
-
 typedef struct PragmaNode PragmaNode;
 
 struct SymbolLiteralNode {
@@ -77,6 +77,14 @@ struct PragmaNode {
     NumericLiteralNode *argument;
 };
 
+struct LiteralExpr {
+    NodeType type;
+    union {
+        NumericLiteralNode numericLiteral;
+        SymbolLiteralNode symbolLiteral;
+    };
+};
+
 struct Expression {
     NodeType type;
     union {
@@ -121,8 +129,9 @@ NumericLiteralNode *parse_numeric_literal(Parser *p);
 BinaryExprNode *parse_binary_expr(Parser *p);
 ComparisonExprNode *parse_comparison_expr(Parser *p);
 UnaryExprNode *parse_unary_expr(Parser *p);
-PragmaNode *parse_pragma(Parser *p);
+LiteralExpr *parse_literal_expr(Parser *p);
 Expression *parse_expression(Parser *p);
+PragmaNode *parse_pragma(Parser *p);
 ProgramNode parse(char *source_text);
 
 #endif//CLITA_PARSER_H
