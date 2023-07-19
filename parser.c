@@ -108,7 +108,7 @@ SymbolDeclarationNode *parse_symbol_declaration(Parser *p) {
         report_error("Expected 'Ho' in symbol declaration");
     }
 
-    NumericLiteralNode *numeric = parse_numeric_literal(p);
+    Expression *expr = parse_expression(p);
 
     SymbolDeclarationNode *node = malloc(sizeof(SymbolDeclarationNode));
     if (node == NULL) {
@@ -117,7 +117,7 @@ SymbolDeclarationNode *parse_symbol_declaration(Parser *p) {
 
     node->type = SymbolDeclaration;
     node->identifier = symbol;
-    node->initialValue = numeric;
+    node->init = expr;
     return node;
 }
 
@@ -131,7 +131,7 @@ SymbolAssignmentNode *parse_symbol_assignment(Parser *p) {
         report_error("Expected 'Kasoloy' in symbol assignment");
     }
 
-    NumericLiteralNode *numeric = parse_numeric_literal(p);
+    Expression *expr = parse_expression(p);
 
     SymbolAssignmentNode *node = malloc(sizeof(SymbolAssignmentNode));
     if (node == NULL) {
@@ -140,7 +140,7 @@ SymbolAssignmentNode *parse_symbol_assignment(Parser *p) {
 
     node->type = SymbolAssignment;
     node->identifier = symbol;
-    node->value = numeric;
+    node->val = expr;
     return node;
 }
 

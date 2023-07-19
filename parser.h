@@ -60,13 +60,13 @@ struct UnaryExprNode {
 struct SymbolDeclarationNode {
     NodeType type;
     SymbolLiteralNode *identifier;
-    NumericLiteralNode *initialValue;
+    Expression *init;
 };
 
 struct SymbolAssignmentNode {
     NodeType type;
     SymbolLiteralNode *identifier;
-    NumericLiteralNode *value;
+    Expression *val;
 };
 
 struct PragmaNode {
