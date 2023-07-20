@@ -75,16 +75,16 @@ Expression *parse_expression(Parser *p) {
                 node->type = BinaryExpr;
                 node->binaryExpr = *parse_binary_expr(p);
             } else {
-                node->type = NumericLiteral;
                 node->literalExpr = *parse_literal_expr(p);
+                node->type = node->literalExpr.type;
             }
             break;
         }
         // we can't operate on boolean
         case Marina:
         case Diso:
-            node->type = BooleanLiteral;
-            node->literalExpr = *parse_literal_expr(p);
+            node->literalExpr.type = node->type = BooleanLiteral;
+            node->literalExpr.booleanLiteral = *parse_boolean_literal(p);
             break;
         default:
             free(node);
@@ -161,6 +161,77 @@ SymbolAssignmentNode *parse_symbol_assignment(Parser *p) {
     node->type = SymbolAssignment;
     node->identifier = symbol;
     node->val = expr;
+    return node;
+}
+
+Block *parse_block(Parser *p) {
+    Block *node = malloc(sizeof(Block));
+    if (node == NULL) {
+        report_error("Failed to allocate memory for statement");
+    }
+
+    size_t capacity = 10;
+    node->type = BlockStatement;
+    node->statements = malloc(capacity * sizeof(Statement));
+    node->stmt_c = 0;
+    if (node->statements == NULL) {
+        free(node);
+        report_error("Failed to allocate memory for statement");
+    }
+
+    if (consume(p)->kind != Backtick || consume(p)->kind != Backtick) {
+        free(node);
+        report_error("Expected '``' to start a block statement");
+    }
+
+    Token *t = NULL;
+    while ((t = p_peek(p))->kind != Eof) {
+        if (t->kind == Quote) break;
+        if (node->stmt_c == capacity) {
+            capacity *= 2;
+            Statement *new_stmt = realloc(node->statements, capacity * sizeof(Statement));
+            if (new_stmt == NULL) {
+                free(node->statements);
+                free(node);
+                report_error("Failed to reallocate memory for statements");
+            }
+            node->statements = new_stmt;
+        }
+        node->statements[node->stmt_c] = *parse_statement(p);
+        node->stmt_c++;
+    }
+
+    if (consume(p)->kind != Quote || consume(p)->kind != Quote) {
+        free(node);
+        report_error("Expected { '' } to end a block statement");
+    }
+
+    Statement *new_stmt = realloc(node->statements, node->stmt_c * sizeof(Statement));
+    if (new_stmt == NULL) {
+        free(node->statements);
+        free(node);
+        report_error("Failed to reallocate memory for statements");
+    }
+    node->statements = new_stmt;
+    return node;
+}
+
+Statement *parse_statement(Parser *p) {
+    Statement *node = malloc(sizeof(Statement));
+    Token *t = p_peek(p);
+    switch (t->kind) {
+        case Raiso:
+            node->type = SymbolAssignment;
+            node->symbolAssignment = *parse_symbol_assignment(p);
+            break;
+        case Forony:
+            node->type = SymbolDeclaration;
+            node->symbolDeclaration = *parse_symbol_declaration(p);
+            break;
+        default:
+            free(node);
+            report_error("Expected { 'Forony' or 'Raiso' } to begin a statement but found %s", kind_str(t->kind));
+    }
     return node;
 }
 
