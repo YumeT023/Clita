@@ -7,6 +7,7 @@ typedef enum {
     Program,
     SymbolDeclaration,
     SymbolAssignment,
+    BlockStatement,
     SymbolLiteral,
     NumericLiteral,
     BooleanLiteral,
@@ -19,6 +20,8 @@ typedef enum {
 typedef struct ProgramNode ProgramNode;
 typedef struct SymbolDeclarationNode SymbolDeclarationNode;
 typedef struct SymbolAssignmentNode SymbolAssignmentNode;
+typedef struct Block Block;
+typedef struct Statement Statement;
 typedef struct Expression Expression;
 typedef struct LiteralExpr LiteralExpr;
 typedef struct BinaryExprNode BinaryExprNode;
@@ -100,6 +103,20 @@ struct Expression {
     };
 };
 
+struct Statement {
+    NodeType type;
+    union {
+        SymbolDeclarationNode symbolDeclaration;
+        SymbolAssignmentNode symbolAssignment;
+    };
+};
+
+struct Block {
+    NodeType type;
+    Statement *statements;
+    size_t stmt_c;
+};
+
 struct ProgramNode {
     NodeType type;
 };
@@ -131,6 +148,7 @@ Token *look_ahead(Parser *p, size_t n);
 SymbolDeclarationNode *parse_symbol_declaration(Parser *p);
 SymbolAssignmentNode *parse_symbol_assignment(Parser *p);
 PragmaNode *parse_pragma(Parser *p);
+Block *parse_block(Parser *p);
 
 SymbolLiteralNode *parse_symbol_literal(Parser *p);
 NumericLiteralNode *parse_numeric_literal(Parser *p);
