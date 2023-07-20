@@ -75,16 +75,16 @@ Expression *parse_expression(Parser *p) {
                 node->type = BinaryExpr;
                 node->binaryExpr = *parse_binary_expr(p);
             } else {
-                node->type = NumericLiteral;
                 node->literalExpr = *parse_literal_expr(p);
+                node->type = node->literalExpr.type;
             }
             break;
         }
         // we can't operate on boolean
         case Marina:
         case Diso:
-            node->type = BooleanLiteral;
-            node->literalExpr = *parse_literal_expr(p);
+            node->literalExpr.type = node->type = BooleanLiteral;
+            node->literalExpr.booleanLiteral = *parse_boolean_literal(p);
             break;
         default:
             free(node);
