@@ -80,6 +80,12 @@ Expression *parse_expression(Parser *p) {
             }
             break;
         }
+        // we can't operate on boolean
+        case Marina:
+        case Diso:
+            node->type = BooleanLiteral;
+            node->literalExpr = *parse_literal_expr(p);
+            break;
         default:
             free(node);
             report_error("Unexpected token %s in Expression", kind_str(t->kind));
@@ -158,6 +164,25 @@ SymbolAssignmentNode *parse_symbol_assignment(Parser *p) {
     return node;
 }
 
+BooleanLiteralNode *parse_boolean_literal(Parser *p) {
+    Token *t = consume(p);
+
+    BooleanLiteralNode *node = malloc(sizeof(BooleanLiteralNode));
+    switch (t->kind) {
+        case Marina:
+            node->value = 1;
+            break;
+        case Diso:
+            node->value = 0;
+            break;
+        default:
+            free(node);
+            report_error("Unexpected %s token", kind_str(t->kind));
+    }
+    node->type = BooleanLiteral;
+    return node;
+}
+
 SymbolLiteralNode *parse_symbol_literal(Parser *p) {
     Token *t = consume(p);
 
@@ -197,6 +222,11 @@ LiteralExpr *parse_literal_expr(Parser *p) {
 
     LiteralExpr *node = malloc(sizeof(LiteralExpr));
     switch (t->kind) {
+        case Marina:
+        case Diso:
+            node->type = BooleanLiteral;
+            node->booleanLiteral = *parse_boolean_literal(p);
+            break;
         case Numeric:
             node->type = NumericLiteral;
             node->numericLiteral = *parse_numeric_literal(p);

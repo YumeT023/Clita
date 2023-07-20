@@ -9,6 +9,7 @@ typedef enum {
     SymbolAssignment,
     SymbolLiteral,
     NumericLiteral,
+    BooleanLiteral,
     BinaryExpr,    // kajy
     ComparisonExpr,// vina
     UnaryExpr,
@@ -24,12 +25,18 @@ typedef struct BinaryExprNode BinaryExprNode;
 typedef struct UnaryExprNode UnaryExprNode;
 typedef struct ComparisonExprNode ComparisonExprNode;
 typedef struct NumericLiteralNode NumericLiteralNode;
+typedef struct BooleanLiteralNode BooleanLiteralNode;
 typedef struct SymbolLiteralNode SymbolLiteralNode;
 typedef struct PragmaNode PragmaNode;
 
 struct SymbolLiteralNode {
     NodeType type;
     char *name;
+};
+
+struct BooleanLiteralNode {
+    NodeType type;
+    bool value;
 };
 
 struct NumericLiteralNode {
@@ -80,6 +87,7 @@ struct LiteralExpr {
     union {
         NumericLiteralNode numericLiteral;
         SymbolLiteralNode symbolLiteral;
+        BooleanLiteralNode booleanLiteral;
     };
 };
 
@@ -127,6 +135,7 @@ NumericLiteralNode *parse_numeric_literal(Parser *p);
 BinaryExprNode *parse_binary_expr(Parser *p);
 ComparisonExprNode *parse_comparison_expr(Parser *p);
 UnaryExprNode *parse_unary_expr(Parser *p);
+BooleanLiteralNode *parse_boolean_literal(Parser *p);
 LiteralExpr *parse_literal_expr(Parser *p);
 Expression *parse_expression(Parser *p);
 PragmaNode *parse_pragma(Parser *p);
