@@ -5,7 +5,7 @@
 
 int main() {
     char *input = "``"
-                  "Forony a ho 0."
+                  "Raiso a ka soloy 0."
                   "Forony b ho 11 ."
                   "Forony c ho 12."
                   "Forony d ho 13."
@@ -13,7 +13,7 @@ int main() {
                   "Forony f ho 15."
                   "Forony g ho 750."
                   "Forony h ho 400."
-                  "Forony i ho 15500."
+                  "Raiso h ka soloy 15500."
                   "Forony j ho 10."
                   "Forony k ho 10."
                   "Forony l ho 10."
@@ -25,8 +25,15 @@ int main() {
     Block *block = parse_block(&p);
 
     for (int i = 0; i < block->stmt_c; i++) {
-        SymbolDeclarationNode dl = block->statements[i].symbolDeclaration;
-        printf("symbol: %s -> %d\n", dl.identifier->name, dl.init->literalExpr.numericLiteral.value);
+        Statement stmt = block->statements[i];
+        switch (stmt.type) {
+            case SymbolAssignment:
+                printf("assignment: %s -> %d\n", stmt.symbolAssignment.identifier->name, stmt.symbolAssignment.val->literalExpr.numericLiteral.value);
+                break;
+            case SymbolDeclaration:
+                printf("declaration: %s -> %d\n", stmt.symbolDeclaration.identifier->name, stmt.symbolDeclaration.init->literalExpr.numericLiteral.value);
+                break;
+        }
     }
 
     return 0;

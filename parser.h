@@ -148,6 +148,7 @@ Token *look_ahead(Parser *p, size_t n);
 SymbolDeclarationNode *parse_symbol_declaration(Parser *p);
 SymbolAssignmentNode *parse_symbol_assignment(Parser *p);
 PragmaNode *parse_pragma(Parser *p);
+Statement *parse_statement(Parser *p);
 Block *parse_block(Parser *p);
 
 SymbolLiteralNode *parse_symbol_literal(Parser *p);

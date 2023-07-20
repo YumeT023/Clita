@@ -166,7 +166,6 @@ SymbolAssignmentNode *parse_symbol_assignment(Parser *p) {
 
 Block *parse_block(Parser *p) {
     Block *node = malloc(sizeof(Block));
-
     if (node == NULL) {
         report_error("Failed to allocate memory for statement");
     }
@@ -176,7 +175,6 @@ Block *parse_block(Parser *p) {
     node->statements = malloc(capacity * sizeof(Statement));
     node->stmt_c = 0;
     if (node->statements == NULL) {
-
         free(node);
         report_error("Failed to allocate memory for statement");
     }
@@ -199,8 +197,7 @@ Block *parse_block(Parser *p) {
             }
             node->statements = new_stmt;
         }
-        node->statements[node->stmt_c].type = SymbolDeclaration;
-        node->statements[node->stmt_c].symbolDeclaration = *parse_symbol_declaration(p);
+        node->statements[node->stmt_c] = *parse_statement(p);
         node->stmt_c++;
     }
 
@@ -216,6 +213,25 @@ Block *parse_block(Parser *p) {
         report_error("Failed to reallocate memory for statements");
     }
     node->statements = new_stmt;
+    return node;
+}
+
+Statement *parse_statement(Parser *p) {
+    Statement *node = malloc(sizeof(Statement));
+    Token *t = p_peek(p);
+    switch (t->kind) {
+        case Raiso:
+            node->type = SymbolAssignment;
+            node->symbolAssignment = *parse_symbol_assignment(p);
+            break;
+        case Forony:
+            node->type = SymbolDeclaration;
+            node->symbolDeclaration = *parse_symbol_declaration(p);
+            break;
+        default:
+            free(node);
+            report_error("Expected { 'Forony' or 'Raiso' } to begin a statement but found %s", kind_str(t->kind));
+    }
     return node;
 }
 
