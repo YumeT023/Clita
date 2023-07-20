@@ -130,15 +130,17 @@ Token *look_ahead(Parser *p, size_t n);
 
 SymbolDeclarationNode *parse_symbol_declaration(Parser *p);
 SymbolAssignmentNode *parse_symbol_assignment(Parser *p);
+PragmaNode *parse_pragma(Parser *p);
+
 SymbolLiteralNode *parse_symbol_literal(Parser *p);
 NumericLiteralNode *parse_numeric_literal(Parser *p);
-BinaryExprNode *parse_binary_expr(Parser *p);
-ComparisonExprNode *parse_comparison_expr(Parser *p);
-UnaryExprNode *parse_unary_expr(Parser *p);
 BooleanLiteralNode *parse_boolean_literal(Parser *p);
+ComparisonExprNode *parse_comparison_expr(Parser *p);
+BinaryExprNode *parse_binary_expr(Parser *p);
+UnaryExprNode *parse_unary_expr(Parser *p);
 LiteralExpr *parse_literal_expr(Parser *p);
 Expression *parse_expression(Parser *p);
-PragmaNode *parse_pragma(Parser *p);
+
 ProgramNode parse(char *source_text);
 
 #endif//CLITA_PARSER_H
