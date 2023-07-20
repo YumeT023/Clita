@@ -12,9 +12,10 @@ Token keyword_tokens[] = {
         {.kind = Baiko, .text = "Baiko"},
         {.kind = Raha, .text = "Raha"},
         {.kind = Raiso, .text = "Raiso"},
-        {.kind = Kasoloy, .text = "Kasoloy"},
         {.kind = Rambola, .text = "Rambola"},
         {.kind = Ho, .text = "Ho"},
+        {.kind = Soloy, .text = "soloy"},
+        {.kind = Ka, .text = "Ka"},
 };
 
 #define KEYWORD_LEN sizeof(keyword_tokens) / sizeof(*keyword_tokens)
@@ -288,8 +289,10 @@ char *kind_str(TokenKind kind) {
             return "Raha";
         case Raiso:
             return "Raiso";
-        case Kasoloy:
-            return "Kasoloy";
+        case Ka:
+            return "Ka";
+        case Soloy:
+            return "Soloy";
         case Rambola:
             return "Rambola";
         case Ho:

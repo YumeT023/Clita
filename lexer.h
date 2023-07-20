@@ -40,8 +40,9 @@ typedef enum {
     Baiko,
     Raha,
     Raiso,
-    Kasoloy,
     Rambola,
+    Ka,
+    Soloy,
     Ho,
 } TokenKind;
 

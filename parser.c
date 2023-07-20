@@ -27,6 +27,13 @@ Token *look_ahead(Parser *p, size_t n) {
     return &p->tokens[pos];
 }
 
+void consume_dot(Parser *p) {
+    TokenKind k = consume(p)->kind;
+    if (k != Dot) {
+        report_error("Expected '.' but found '%s'", kind_str(k));
+    }
+}
+
 Token *consume(Parser *p) {
     Token *t = p_peek(p);
     p->pos++;
@@ -115,6 +122,8 @@ SymbolDeclarationNode *parse_symbol_declaration(Parser *p) {
         report_error("Failed to allocate memory for symbol declaration");
     }
 
+    consume_dot(p);
+
     node->type = SymbolDeclaration;
     node->identifier = symbol;
     node->init = expr;
@@ -127,11 +136,16 @@ SymbolAssignmentNode *parse_symbol_assignment(Parser *p) {
     }
     SymbolLiteralNode *symbol = parse_symbol_literal(p);
 
-    if (consume(p)->kind != Kasoloy) {
-        report_error("Expected 'Kasoloy' in symbol assignment");
+    if (consume(p)->kind != Ka) {
+        report_error("Expected 'Ka' in symbol assignment");
+    }
+    if (consume(p)->kind != Soloy) {
+        report_error("Expected 'Soloy' in symbol assignment");
     }
 
     Expression *expr = parse_expression(p);
+
+    consume_dot(p);
 
     SymbolAssignmentNode *node = malloc(sizeof(SymbolAssignmentNode));
     if (node == NULL) {

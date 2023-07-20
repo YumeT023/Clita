@@ -106,6 +106,7 @@ Parser create_parser(Lexer *l);
 
 Token *consume(Parser *p);
 Token *p_peek(Parser *p);
+void consume_dot(Parser *p);
 
 /**
  * (Backtracking)
