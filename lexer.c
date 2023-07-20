@@ -92,7 +92,7 @@ Token *lex(Lexer *l) {
             tokens = new_tokens;
         }
     }
-    Token *new_tokens = realloc(tokens, l->scanned_tc * sizeof(Token));
+    Token *new_tokens = realloc(tokens, (l->scanned_tc + 1) * sizeof(Token));
     if (new_tokens == NULL) {
         free(tokens);
         return NULL;

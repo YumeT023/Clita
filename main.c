@@ -1,9 +1,10 @@
 #include "lexer.h"
 #include "parser.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 int main() {
-    char *input = "Forony ngeza_ve ho diso.       Raiso ngeza_ve ka soloy Marina.";
+    char *input = "Forony ngeza_ve ho diso. Raiso ngeza_ve ka soloy Marina.";
     Lexer l = create_lexer(input);
     Parser p = create_parser(&l);
 
